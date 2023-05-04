@@ -1,5 +1,6 @@
 import type { AxiosProgressEvent, GenericAbortSignal } from 'axios'
 import { post } from '@/utils/request'
+import { get } from '@/utils/request'
 import { useAuthStore, useSettingStore } from '@/store'
 
 export function fetchChatAPI<T = any>(
@@ -64,3 +65,24 @@ export function fetchVerify<T>(token: string) {
     data: { token },
   })
 }
+
+export function fetchChatToken<T = any>() {
+	return get<T>({
+		url: '/token',
+	})
+}
+
+export function updateChatToken<T = any>(params: {
+	token: string
+	},) {
+
+	let data: Record<string, any> = {
+		token: params.token,
+	}
+
+	return post<T>({
+		url: '/token',
+		data: data,
+	})
+}
+

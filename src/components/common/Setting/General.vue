@@ -8,6 +8,8 @@ import type { UserInfo } from '@/store/modules/user/helper'
 import { getCurrentDate } from '@/utils/functions'
 import { useBasicLayout } from '@/hooks/useBasicLayout'
 import { t } from '@/locales'
+import { updateChatToken } from '@/api'
+
 
 const appStore = useAppStore()
 const userStore = useUserStore()
@@ -26,6 +28,8 @@ const name = ref(userInfo.value.name ?? '')
 
 const description = ref(userInfo.value.description ?? '')
 
+const token = ref(userInfo.value.token ?? '')
+
 const language = computed({
   get() {
     return appStore.language
@@ -34,6 +38,7 @@ const language = computed({
     appStore.setLanguage(value)
   },
 })
+
 
 const themeOptions: { label: string; key: Theme; icon: string }[] = [
   {
@@ -64,6 +69,12 @@ const languageOptions: { label: string; key: Language; value: Language }[] = [
 function updateUserInfo(options: Partial<UserInfo>) {
   userStore.updateUserInfo(options)
   ms.success(t('common.success'))
+}
+
+async function updateAccessToken(token: string) {
+	await updateChatToken({token: token})
+	userStore.updateUserInfo({ token: token })
+	ms.success(t('common.success'))
 }
 
 function handleReset() {
@@ -125,6 +136,15 @@ function handleImportButtonClick(): void {
 <template>
   <div class="p-4 space-y-5 min-h-[200px]">
     <div class="space-y-6">
+			<div class="flex items-center space-x-4">
+				<span class="flex-shrink-0 w-[100px]">Access Token</span>
+				<div class="flex-1">
+					<NInput v-model:value="token" placeholder="" />
+				</div>
+				<NButton size="tiny" text type="primary" @click="updateAccessToken( token )">
+					{{ $t('common.save') }}
+				</NButton>
+			</div>
       <div class="flex items-center space-x-4">
         <span class="flex-shrink-0 w-[100px]">{{ $t('setting.avatarLink') }}</span>
         <div class="flex-1">
@@ -143,6 +163,7 @@ function handleImportButtonClick(): void {
           {{ $t('common.save') }}
         </NButton>
       </div>
+
       <div class="flex items-center space-x-4">
         <span class="flex-shrink-0 w-[100px]">{{ $t('setting.description') }}</span>
         <div class="flex-1">

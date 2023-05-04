@@ -82,6 +82,32 @@ router.post('/verify', async (req, res) => {
   }
 })
 
+
+router.get('/token', async (req, res) => {
+	try {
+
+		res.send({ status: 'Success', message: 'ok', data: process.env.OPENAI_ACCESS_TOKEN })
+	}
+	catch (error) {
+		res.send({ status: 'Fail', message: error.message, data: null })
+	}
+})
+
+router.post('/token', async (req, res) => {
+	try {
+		const { token } = req.body as { token: string }
+		if (!token)
+			throw new Error('access key is empty')
+
+		process.env.OPENAI_ACCESS_TOKEN= token
+
+		res.send({ status: 'Success', message: 'changed token successfully', data: token })
+	}
+	catch (error) {
+		res.send({ status: 'Fail', message: error.message, data: null })
+	}
+})
+
 app.use('', router)
 app.use('/api', router)
 app.set('trust proxy', 1)

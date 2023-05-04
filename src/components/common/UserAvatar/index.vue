@@ -4,10 +4,20 @@ import { NAvatar } from 'naive-ui'
 import { useUserStore } from '@/store'
 import defaultAvatar from '@/assets/avatar.jpg'
 import { isString } from '@/utils/is'
+import {fetchChatToken} from "@/api";
 
 const userStore = useUserStore()
 
 const userInfo = computed(() => userStore.userInfo)
+
+setAccessToken()
+
+async function setAccessToken() {
+	const response = await fetchChatToken();
+	const token =response.data;
+	userStore.updateUserInfo({token:token})
+
+}
 </script>
 
 <template>
