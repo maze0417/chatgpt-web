@@ -9,6 +9,7 @@ import { sendResponse } from '../utils'
 import { isNotEmptyString } from '../utils/is'
 import type { ApiModel, ChatContext, ChatGPTUnofficialProxyAPIOptions, ModelConfig } from '../types'
 import type { RequestOptions, SetProxyOptions, UsageResponse } from './types'
+import * as console from "console";
 
 const { HttpsProxyAgent } = httpsProxyAgent
 
@@ -64,6 +65,7 @@ let api: ChatGPTAPI | ChatGPTUnofficialProxyAPI
 
     setupProxy(options)
 
+		console.log(options.apiBaseUrl)
     api = new ChatGPTAPI({ ...options })
     apiModel = 'ChatGPTAPI'
   }
@@ -99,6 +101,7 @@ async function chatReplyProcess(options: RequestOptions) {
       else
         options = { ...lastContext }
     }
+
 
     const response = await api.sendMessage(message, {
       ...options,
